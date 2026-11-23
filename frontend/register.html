@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Your Account | FarmDirect</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body style="background:#f8faf5;display:flex;flex-direction:column;min-height:100vh;">
+
+  <header class="site-header">
+    <div class="container header-inner" style="justify-content:center;">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-leaf"></i>
+        <span>FarmDirect</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container section" style="flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 1rem;">
+    <div class="card" style="width:100%;max-width:540px;padding:2.5rem;">
+      
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <h1 style="font-size:1.75rem;font-weight:800;color:var(--text-dark);margin-bottom:0.5rem;">Join FarmDirect</h1>
+        <p style="color:var(--text-muted);font-size:0.9rem;">Connecting Indian Farmers Directly to Consumers</p>
+      </div>
+
+      <!-- Role Tabs (Customer vs Farmer) -->
+      <div style="display:flex;gap:0.5rem;background:#f3f4f6;padding:0.35rem;border-radius:var(--radius-md);margin-bottom:2rem;">
+        <button id="tab-cust-btn" type="button" class="btn btn-sm btn-block" style="background:#fff;font-weight:700;color:var(--primary-color);box-shadow:var(--shadow-sm);" onclick="switchTab('CUSTOMER')">
+          🛒 Customer Registration
+        </button>
+        <button id="tab-farm-btn" type="button" class="btn btn-sm btn-block" style="background:transparent;font-weight:600;color:var(--text-muted);" onclick="switchTab('FARMER')">
+          🌾 Farmer Registration
+        </button>
+      </div>
+
+      <form id="register-form">
+        <input type="hidden" id="reg-role" value="CUSTOMER">
+
+        <!-- Universal Fields -->
+        <div class="form-group">
+          <label class="form-label" id="label-fullname">Full Name *</label>
+          <input type="text" id="reg-fullname" class="form-control" required placeholder="Enter full name">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" id="reg-email" class="form-control" required placeholder="name@domain.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mobile Number *</label>
+            <input type="tel" id="reg-phone" class="form-control" required placeholder="10-digit mobile" maxlength="10">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <input type="password" id="reg-pass" class="form-control" required placeholder="Min 6 characters">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password *</label>
+            <input type="password" id="reg-confirm-pass" class="form-control" required placeholder="Re-type password">
+          </div>
+        </div>
+
+        <!-- Farmer-Specific Extra Fields -->
+        <div id="farmer-fields-container" style="display:none;border-top:1px dashed var(--border-color);padding-top:1.5rem;margin-top:1rem;">
+          <div style="font-weight:700;color:var(--primary-color);margin-bottom:1rem;font-size:0.95rem;">
+            🌾 Farm & Agricultural Profile Details
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Farm / Producer Name *</label>
+            <input type="text" id="reg-farmname" class="form-control" placeholder="e.g. Sahyadri Agro Valley">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">District *</label>
+              <input type="text" id="reg-district" class="form-control" placeholder="e.g. Nashik, Ludhiana">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State *</label>
+              <select id="reg-state" class="form-control form-select">
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">PIN Code *</label>
+              <input type="text" id="reg-pincode" class="form-control" placeholder="6-digit PIN" maxlength="6">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Years of Farming *</label>
+              <input type="number" id="reg-experience" class="form-control" placeholder="e.g. 10" value="5">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Farming Category</label>
+            <select id="reg-category" class="form-control form-select">
+              <option value="Vegetables & Fruits">Vegetables & Fruits</option>
+              <option value="Grains & Cereals">Grains & Cereals (Rice, Wheat)</option>
+              <option value="Pulses & Lentils">Pulses & Lentils</option>
+              <option value="Dairy & Livestock">Dairy (Cow Milk, Vedic Ghee)</option>
+              <option value="Spices & Herbs">Spices & Herbs</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Farm Photograph (Optional)</label>
+            <input type="file" id="reg-farmphoto" class="form-control" accept="image/*">
+            <div class="form-helper">Upload a photo of your fields, orchards, or cowshed.</div>
+          </div>
+        </div>
+
+        <button type="submit" id="reg-submit-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:1.5rem;">
+          Complete Registration
+        </button>
+      </form>
+
+      <div style="text-align:center;margin-top:2rem;font-size:0.9rem;color:var(--text-muted);">
+        Already registered on FarmDirect? <br>
+        <a href="login.html" style="font-weight:700;color:var(--primary-color);">Sign in to your account</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    function switchTab(role) {
+      const custBtn = document.getElementById('tab-cust-btn');
+      const farmBtn = document.getElementById('tab-farm-btn');
+      const farmFields = document.getElementById('farmer-fields-container');
+      const roleInput = document.getElementById('reg-role');
+
+      roleInput.value = role;
+
+      if (role === 'FARMER') {
+        farmBtn.style.background = '#fff';
+        farmBtn.style.color = 'var(--primary-color)';
+        farmBtn.style.boxShadow = 'var(--shadow-sm)';
+        custBtn.style.background = 'transparent';
+        custBtn.style.color = 'var(--text-muted)';
+        custBtn.style.boxShadow = 'none';
+        farmFields.style.display = 'block';
+        document.getElementById('label-fullname').textContent = "Farmer's Full Name *";
+      } else {
+        custBtn.style.background = '#fff';
+        custBtn.style.color = 'var(--primary-color)';
+        custBtn.style.boxShadow = 'var(--shadow-sm)';
+        farmBtn.style.background = 'transparent';
+        farmBtn.style.color = 'var(--text-muted)';
+        farmBtn.style.boxShadow = 'none';
+        farmFields.style.display = 'none';
+        document.getElementById('label-fullname').textContent = "Customer Full Name *";
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('role') === 'farmer') {
+        switchTab('FARMER');
+      }
+
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const pass = document.getElementById('reg-pass').value;
+        const confirmPass = document.getElementById('reg-confirm-pass').value;
+
+        if (pass !== confirmPass) {
+          toast.error('Passwords do not match');
+          return;
+        }
+
+        const role = document.getElementById('reg-role').value;
+        const btn = document.getElementById('reg-submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering Account...';
+
+        try {
+          const formData = new FormData();
+          formData.append('role', role);
+          formData.append('fullName', document.getElementById('reg-fullname').value.trim());
+          formData.append('email', document.getElementById('reg-email').value.trim());
+          formData.append('phone', document.getElementById('reg-phone').value.trim());
+          formData.append('password', pass);
+
+          if (role === 'FARMER') {
+            formData.append('farmName', document.getElementById('reg-farmname').value.trim());
+            formData.append('district', document.getElementById('reg-district').value.trim());
+            formData.append('state', document.getElementById('reg-state').value);
+            formData.append('pinCode', document.getElementById('reg-pincode').value.trim());
+            formData.append('experienceYears', document.getElementById('reg-experience').value);
+            formData.append('farmingCategory', document.getElementById('reg-category').value);
+
+            const photoFile = document.getElementById('reg-farmphoto').files[0];
+            if (photoFile) {
+              formData.append('farmPhoto', photoFile);
+            }
+          }
+
+          const res = await auth.register(formData);
+          toast.success(res.message);
+
+          setTimeout(() => {
+            if (role === 'FARMER') {
+              window.location.href = 'farmer/dashboard.html';
+            } else {
+              window.location.href = 'index.html';
+            }
+          }, 800);
+        } catch (err) {
+          toast.error(err.message || 'Registration failed');
+          btn.disabled = false;
+          btn.innerHTML = 'Complete Registration';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

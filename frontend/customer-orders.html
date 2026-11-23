@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders | FarmDirect</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="mobile-menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        <a href="index.html" class="brand-logo">
+          <i class="fa-solid fa-leaf"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Marketplace</a>
+        <a href="farmers-map.html" class="nav-link">Nearby Farmers</a>
+        <a href="customer-orders.html" class="nav-link active">My Orders</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="wishlist.html" class="action-icon-btn"><i class="fa-regular fa-heart"></i></a>
+        <a href="cart.html" class="action-icon-btn"><i class="fa-solid fa-cart-shopping"></i></a>
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </header>
+  <div class="backdrop-overlay"></div>
+
+  <main class="container section" style="padding-top:2.5rem;max-width:960px;">
+    <h1 style="font-size:2rem;font-weight:800;color:var(--text-dark);margin-bottom:2rem;">Your Harvest Orders</h1>
+
+    <div id="customer-orders-list" style="display:flex;flex-direction:column;gap:1.5rem;">
+      <!-- Orders loaded dynamically -->
+    </div>
+
+    <div id="customer-orders-empty" class="card" style="display:none;text-align:center;padding:4rem 1.5rem;">
+      <i class="fa-solid fa-box-open" style="font-size:3.5rem;color:#cbd5e1;margin-bottom:1.25rem;"></i>
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">No Orders Placed Yet</h2>
+      <p style="color:var(--text-muted);margin-bottom:1.5rem;">You haven't ordered directly from our farmers yet.</p>
+      <a href="products.html" class="btn btn-primary">Start Shopping Fresh Produce</a>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!auth.requireAuth()) return;
+
+      try {
+        const res = await api.get('/orders');
+        const orders = res.data;
+        const container = document.getElementById('customer-orders-list');
+        const emptyState = document.getElementById('customer-orders-empty');
+
+        if (!orders || orders.length === 0) {
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        container.innerHTML = orders.map(ord => {
+          let statusBadge = 'badge-neutral';
+          if (ord.status === 'CONFIRMED') statusBadge = 'badge-info';
+          if (ord.status === 'PROCESSING') statusBadge = 'badge-warning';
+          if (ord.status === 'SHIPPED') statusBadge = 'badge-info';
+          if (ord.status === 'DELIVERED') statusBadge = 'badge-success';
+          if (ord.status === 'CANCELLED') statusBadge = 'badge-danger';
+
+          return `
+            <div class="card" style="padding:1.5rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-light);padding-bottom:1rem;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem;">
+                <div>
+                  <strong style="font-size:1.1rem;color:var(--text-dark);">Order #${ord.orderNumber}</strong>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Placed on ${new Date(ord.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                  <span class="badge ${statusBadge}">${ord.status}</span>
+                  <span class="badge ${ord.paymentStatus === 'PAID' ? 'badge-success' : 'badge-warning'}">${ord.paymentStatus}</span>
+                </div>
+              </div>
+
+              <!-- Items list -->
+              <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem;">
+                ${ord.items.map(it => `
+                  <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.9rem;">
+                    <div>
+                      <strong>${it.productName || 'Agricultural Produce'}</strong> × ${it.quantity} ${it.unit || 'unit'}
+                    </div>
+                    <div>₹${it.totalPrice.toFixed(2)}</div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Footer with total and actions -->
+              <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-light);padding-top:1rem;flex-wrap:wrap;gap:1rem;">
+                <div>
+                  <span style="font-size:0.85rem;color:var(--text-muted);">Total Paid: </span>
+                  <strong style="font-size:1.2rem;color:var(--primary-color);">₹${ord.grandTotal.toFixed(2)}</strong>
+                </div>
+                <div style="display:flex;gap:0.75rem;">
+                  <a href="order-tracking.html?id=${ord.id}" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-truck-fast"></i> Track Order
+                  </a>
+                  ${['PLACED', 'CONFIRMED'].includes(ord.status) ? `
+                    <button class="btn btn-sm btn-light" style="color:var(--danger-color);" onclick="cancelCustomerOrder('${ord.id}')">
+                      Cancel
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        toast.error('Failed to load orders');
+      }
+    });
+
+    async function cancelCustomerOrder(orderId) {
+      if (confirm('Are you sure you want to cancel this order?')) {
+        try {
+          await api.post(`/orders/${orderId}/cancel`);
+          toast.success('Order cancelled successfully');
+          setTimeout(() => window.location.reload(), 800);
+        } catch (e) {
+          toast.error(e.message || 'Could not cancel order');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

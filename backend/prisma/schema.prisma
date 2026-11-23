@@ -1,0 +1,449 @@
+// FarmDirect PostgreSQL Database Schema with Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  FARMER
+  ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum OrderStatus {
+  PLACED
+  CONFIRMED
+  PROCESSING
+  READY_FOR_PICKUP
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  UPI
+  CARD
+  NETBANKING
+  COD
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+// 1. User
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  phone           String?           @unique
+  passwordHash    String
+  role            Role              @default(CUSTOMER)
+  isActive        Boolean           @default(true)
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  farmerProfile   FarmerProfile?
+  customerProfile CustomerProfile?
+  addresses       Address[]
+  cart            Cart?
+  wishlist        Wishlist?
+  orders          Order[]
+  payments        Payment[]
+  reviews         Review[]
+  notifications   Notification[]
+  sentMessages    Message[]         @relation("SentMessages")
+  customerConvs   Conversation[]    @relation("CustomerConversations")
+  farmerConvs     Conversation[]    @relation("FarmerConversations")
+
+  @@index([email])
+  @@index([role])
+}
+
+// 2. FarmerProfile
+model FarmerProfile {
+  id                  String             @id @default(uuid())
+  userId              String             @unique
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  farmName            String
+  bio                 String?
+  experienceYears     Int?               @default(0)
+  farmPhoto           String?
+  farmAddress         String
+  district            String
+  state               String
+  pinCode             String
+  latitude            Float?
+  longitude           Float?
+  farmingCategory     String?
+  verificationStatus  VerificationStatus @default(PENDING)
+  isOrganicCertified  Boolean            @default(false)
+  certificationNumber String?
+  rating              Float              @default(5.0)
+  totalReviews        Int                @default(0)
+  bankAccountName     String?
+  bankAccountNumber    String?
+  bankIfscCode        String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  products            Product[]
+  fulfillments        FarmerFulfillment[]
+  reviews             Review[]
+  transactions        Transaction[]
+  orderItems          OrderItem[]
+
+  @@index([district, state])
+  @@index([verificationStatus])
+  @@index([latitude, longitude])
+}
+
+// 3. CustomerProfile
+model CustomerProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  avatar    String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 4. Address
+model Address {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName    String
+  phone       String
+  houseNumber String
+  street      String
+  landmark    String?
+  city        String
+  district    String
+  state       String
+  pinCode     String
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders      Order[]
+
+  @@index([userId])
+}
+
+// 5. Category
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  icon        String?
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+// 6. Product
+model Product {
+  id                 String         @id @default(uuid())
+  farmerId           String
+  farmer             FarmerProfile  @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  categoryId         String
+  category           Category       @relation(fields: [categoryId], references: [id])
+  name               String
+  slug               String
+  description        String
+  price              Decimal        @db.Decimal(10, 2)
+  unit               String         @default("kg") // kg, g, dozen, liter, packet
+  stockQuantity      Decimal        @db.Decimal(10, 2)
+  minOrderQuantity   Decimal        @default(1) @db.Decimal(10, 2)
+  isOrganic          Boolean        @default(false)
+  organicCertDetails String?
+  harvestDate        DateTime?
+  isAvailable        Boolean        @default(true)
+  isPublished        Boolean        @default(true)
+  averageRating      Float          @default(5.0)
+  reviewCount        Int            @default(0)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  images             ProductImage[]
+  cartItems          CartItem[]
+  wishlistItems      WishlistItem[]
+  orderItems         OrderItem[]
+  reviews            Review[]
+
+  @@index([farmerId])
+  @@index([categoryId])
+  @@index([isOrganic])
+  @@index([isPublished, isAvailable])
+}
+
+// 7. ProductImage
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  isPrimary Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+// 8. Cart
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items     CartItem[]
+}
+
+// 9. CartItem
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+}
+
+// 10. Wishlist
+model Wishlist {
+  id        String         @id @default(uuid())
+  userId    String         @unique
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  items     WishlistItem[]
+}
+
+// 11. WishlistItem
+model WishlistItem {
+  id         String   @id @default(uuid())
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+}
+
+// 12. Order
+model Order {
+  id                 String              @id @default(uuid())
+  orderNumber        String              @unique
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  addressId          String
+  address            Address             @relation(fields: [addressId], references: [id])
+  totalAmount        Decimal             @db.Decimal(10, 2)
+  deliveryCharge     Decimal             @default(0) @db.Decimal(10, 2)
+  grandTotal         Decimal             @db.Decimal(10, 2)
+  paymentStatus      PaymentStatus       @default(PENDING)
+  status             OrderStatus         @default(PLACED)
+  paymentMethod      PaymentMethod       @default(RAZORPAY)
+  razorpayOrderId    String?
+  razorpayPaymentId  String?
+  notes              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  items              OrderItem[]
+  fulfillments       FarmerFulfillment[]
+  payments           Payment[]
+  reviews            Review[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([paymentStatus])
+}
+
+// 13. OrderItem
+model OrderItem {
+  id          String        @id @default(uuid())
+  orderId     String
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product       @relation(fields: [productId], references: [id])
+  farmerId    String
+  farmer      FarmerProfile @relation(fields: [farmerId], references: [id])
+  quantity    Decimal       @db.Decimal(10, 2)
+  unitPrice   Decimal       @db.Decimal(10, 2)
+  totalPrice  Decimal       @db.Decimal(10, 2)
+  createdAt   DateTime      @default(now())
+
+  @@index([orderId])
+  @@index([farmerId])
+}
+
+// 14. FarmerFulfillment (Separate fulfillment per farmer for multi-vendor orders)
+model FarmerFulfillment {
+  id             String        @id @default(uuid())
+  orderId        String
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  farmerId       String
+  farmer         FarmerProfile @relation(fields: [farmerId], references: [id])
+  subtotal       Decimal       @db.Decimal(10, 2)
+  status         OrderStatus   @default(PLACED)
+  trackingNumber String?
+  courierName    String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([farmerId])
+  @@index([status])
+}
+
+// 15. Payment
+model Payment {
+  id               String        @id @default(uuid())
+  orderId          String
+  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  amount           Decimal       @db.Decimal(10, 2)
+  currency         String        @default("INR")
+  status           PaymentStatus @default(PENDING)
+  paymentMethod    PaymentMethod @default(RAZORPAY)
+  transactionId    String?
+  gatewayOrderId   String?
+  gatewaySignature String?
+  metadata         String?       // JSON stringified payload
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([userId])
+}
+
+// 16. Review
+model Review {
+  id                 String        @id @default(uuid())
+  productId          String?
+  product            Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  farmerId           String
+  farmer             FarmerProfile @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId            String?
+  order              Order?        @relation(fields: [orderId], references: [id])
+  rating             Int           @default(5)
+  comment            String
+  isVerifiedPurchase Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([productId])
+  @@index([farmerId])
+  @@index([userId])
+}
+
+// 17. Notification
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, ORDER, PAYMENT, VERIFICATION
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
+// 18. Conversation
+model Conversation {
+  id         String    @id @default(uuid())
+  customerId String
+  customer   User      @relation("CustomerConversations", fields: [customerId], references: [id], onDelete: Cascade)
+  farmerId   String
+  farmer     User      @relation("FarmerConversations", fields: [farmerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  messages   Message[]
+
+  @@unique([customerId, farmerId])
+  @@index([customerId])
+  @@index([farmerId])
+}
+
+// 19. Message
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  text           String
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+}
+
+// 20. Transaction
+model Transaction {
+  id          String            @id @default(uuid())
+  farmerId    String
+  farmer      FarmerProfile     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  orderId     String?
+  amount      Decimal           @db.Decimal(10, 2)
+  type        TransactionType   @default(CREDIT)
+  status      TransactionStatus @default(COMPLETED)
+  description String
+  createdAt   DateTime          @default(now())
+
+  @@index([farmerId])
+  @@index([status])
+}

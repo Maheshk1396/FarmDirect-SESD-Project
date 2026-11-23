@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Management | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="add-product.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-plus-circle"></i> Add New Product
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+        <a href="earnings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="profile.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+      </nav>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">Real-Time Crop Inventory Control</h2>
+      </header>
+
+      <div class="dashboard-body">
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Produce</th>
+                  <th>Current Stock</th>
+                  <th>Availability</th>
+                  <th>Quick Stock Adjust</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <tr><td colspan="5" style="text-align:center;padding:2rem;">Loading inventory data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!auth.requireAuth('FARMER')) return;
+      loadInventory();
+    });
+
+    async function loadInventory() {
+      try {
+        const res = await api.get('/farmer/inventory');
+        const items = res.data;
+        const tbody = document.getElementById('inventory-table-body');
+
+        if (!items || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:3rem;">No products found in inventory.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = items.map(p => `
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <img src="${p.imageUrl}" alt="${p.name}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">
+                <strong>${p.name}</strong>
+              </div>
+            </td>
+            <td>
+              <span class="badge ${p.lowStock ? 'badge-danger' : 'badge-success'}">
+                ${p.stockQuantity} ${p.unit}s ${p.lowStock ? '(Low Stock Alert)' : ''}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${p.isAvailable ? 'badge-success' : 'badge-neutral'}">
+                ${p.isAvailable ? 'Available' : 'Disabled'}
+              </span>
+            </td>
+            <td>
+              <input type="number" id="stock-input-${p.id}" value="${p.stockQuantity}" style="width:100px;padding:0.4rem;border-radius:var(--radius-sm);border:1px solid var(--border-color);font-weight:700;">
+              <span style="font-size:0.85rem;color:var(--text-muted);">${p.unit}</span>
+            </td>
+            <td>
+              <button class="btn btn-primary btn-sm" onclick="saveStock('${p.id}')">
+                Save
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        toast.error('Failed to load inventory');
+      }
+    }
+
+    async function saveStock(productId) {
+      const input = document.getElementById(`stock-input-${productId}`);
+      const newQty = parseFloat(input.value);
+
+      if (isNaN(newQty) || newQty < 0) {
+        toast.error('Enter a valid stock number');
+        return;
+      }
+
+      try {
+        await api.patch(`/farmer/inventory/${productId}`, { stockQuantity: newQty });
+        toast.success('Stock updated successfully!');
+        loadInventory();
+      } catch (e) {
+        toast.error(e.message || 'Failed to update stock');
+      }
+    }
+  </script>
+</body>
+</html>

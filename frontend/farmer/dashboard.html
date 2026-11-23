@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Dashboard | FarmDirect</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js for Farmer Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+        <span class="farmer-badge-pill">Farmer</span>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="sidebar-menu-title">Main Portal</div>
+        <a href="dashboard.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="add-product.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-plus-circle"></i> Add New Product
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+
+        <div class="sidebar-menu-title" style="margin-top:1.5rem;">Finance & Reputation</div>
+        <a href="earnings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="reviews.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-star"></i> Customer Reviews
+        </a>
+        <a href="profile.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+        <a href="settings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gear"></i> Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">🌾</div>
+          <div style="flex:1;overflow:hidden;">
+            <div id="dash-farmer-name" style="font-weight:700;color:#fff;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Farmer</div>
+            <div style="font-size:0.75rem;color:#94a3b8;">Producer Account</div>
+          </div>
+          <a href="javascript:void(0)" onclick="auth.logout()" style="color:#94a3b8;" title="Sign Out">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+      
+      <!-- Top Header -->
+      <header class="dashboard-header">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <h2 id="dash-farm-name" style="font-size:1.3rem;font-weight:800;color:var(--text-dark);">
+            My Farm Operations
+          </h2>
+          <span id="dash-verified-badge" class="badge badge-verified">Verified Farm</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <a href="../products.html" target="_blank" class="btn btn-outline btn-sm">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Storefront
+          </a>
+          <a href="add-product.html" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> Add Harvest
+          </a>
+        </div>
+      </header>
+
+      <!-- Dashboard Body -->
+      <div class="dashboard-body">
+        
+        <!-- 5 Key Performance Metric Cards -->
+        <div class="dashboard-stats-grid">
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="stat-label">Total Gross Sales</div>
+              <div class="stat-value" id="stat-total-revenue">₹0</div>
+              <div class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> +18.4% vs last mo</div>
+            </div>
+            <div class="stat-icon green"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="stat-label">Total Orders Received</div>
+              <div class="stat-value" id="stat-total-orders">0</div>
+              <div class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> Active Buyers</div>
+            </div>
+            <div class="stat-icon blue"><i class="fa-solid fa-boxes-packing"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="stat-label">Pending Fulfillment</div>
+              <div class="stat-value" id="stat-pending-orders" style="color:var(--warning-color);">0</div>
+              <div class="stat-trend" style="color:var(--warning-color);"><i class="fa-solid fa-clock"></i> Action Needed</div>
+            </div>
+            <div class="stat-icon yellow"><i class="fa-solid fa-truck-ramp-box"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="stat-label">Active Crop Listings</div>
+              <div class="stat-value" id="stat-active-products">0</div>
+              <div class="stat-trend"><i class="fa-solid fa-seedling"></i> Published Harvests</div>
+            </div>
+            <div class="stat-icon purple"><i class="fa-solid fa-wheat-awn"></i></div>
+          </div>
+        </div>
+
+        <!-- Analytics Charts Row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Monthly Revenue Trend (₹ INR)</div>
+              <span class="badge badge-neutral">Last 6 Months</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="revenueChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Order Fulfillment Status</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ordersChartCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Recent Incoming Orders</div>
+            <a href="orders.html" class="btn btn-outline btn-sm">Manage All Orders</a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Subtotal</th>
+                  <th>Fulfillment Status</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody id="recent-orders-table-body">
+                <tr><td colspan="6" style="text-align:center;padding:2rem;">Loading incoming orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top Selling Products Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Top Performing Produce</div>
+            <a href="products.html" class="btn btn-outline btn-sm">All Inventory</a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Produce</th>
+                  <th>Price</th>
+                  <th>Total Units Sold</th>
+                  <th>Total Earned</th>
+                </tr>
+              </thead>
+              <tbody id="best-sellers-table-body">
+                <tr><td colspan="4" style="text-align:center;padding:2rem;">Loading sales statistics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      dashboard.init();
+    });
+  </script>
+</body>
+</html>

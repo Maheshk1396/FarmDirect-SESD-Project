@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earnings & Bank Payouts | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+        <a href="earnings.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="profile.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+      </nav>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">Revenue, Payouts & Transactions</h2>
+      </header>
+
+      <div class="dashboard-body">
+        
+        <!-- Balance Cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
+          <div class="card" style="padding:1.5rem;">
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.4rem;">Total Lifetime Gross Earnings</div>
+            <div id="earn-total" style="font-size:2rem;font-weight:800;color:var(--primary-color);">₹0</div>
+          </div>
+          <div class="card" style="padding:1.5rem;">
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.4rem;">Available for Instant Payout</div>
+            <div id="earn-available" style="font-size:2rem;font-weight:800;color:var(--secondary-color);">₹0</div>
+          </div>
+          <div class="card" style="padding:1.5rem;">
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.4rem;">Pending Settlement</div>
+            <div id="earn-pending" style="font-size:2rem;font-weight:800;color:var(--warning-color);">₹0</div>
+          </div>
+        </div>
+
+        <!-- Linked Bank Account Box -->
+        <div class="card" style="padding:1.5rem;margin-bottom:2rem;background:#f0fdf4;border-color:#bbf7d0;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;color:var(--primary-color);font-size:1rem;margin-bottom:0.25rem;">
+              <i class="fa-solid fa-building-columns"></i> Verified Indian Bank Account (NEFT / IMPS)
+            </div>
+            <div id="earn-bank-info" style="font-size:0.85rem;color:var(--text-muted);">
+              State Bank of India • A/C: ••••••••1928 • IFSC: SBIN0004123
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="toast.info('Direct daily automated settlements enabled via RazorpayX')">
+            Payout Settings
+          </button>
+        </div>
+
+        <!-- Transactions History -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Transaction & Payout History</div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="earnings-transactions-table">
+                <tr><td colspan="6" style="text-align:center;padding:2rem;">Loading transaction records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!auth.requireAuth('FARMER')) return;
+
+      try {
+        const res = await api.get('/farmer/earnings');
+        const data = res.data;
+
+        document.getElementById('earn-total').textContent = `₹${data.totalEarnings.toLocaleString('en-IN')}`;
+        document.getElementById('earn-available').textContent = `₹${data.availableBalance.toLocaleString('en-IN')}`;
+        document.getElementById('earn-pending').textContent = `₹${data.pendingSettlement.toLocaleString('en-IN')}`;
+
+        const tbody = document.getElementById('earnings-transactions-table');
+        if (!data.transactions || data.transactions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;">No transaction records found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.transactions.map(t => `
+          <tr>
+            <td><strong>#${t.id}</strong></td>
+            <td>${new Date(t.createdAt).toLocaleDateString()}</td>
+            <td>${t.description}</td>
+            <td><span class="badge ${t.type === 'CREDIT' ? 'badge-success' : 'badge-neutral'}">${t.type}</span></td>
+            <td><strong style="color:var(--primary-color);">+₹${t.amount.toFixed(2)}</strong></td>
+            <td><span class="badge badge-success">${t.status}</span></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        toast.error('Failed to load earnings data');
+      }
+    });
+  </script>
+</body>
+</html>

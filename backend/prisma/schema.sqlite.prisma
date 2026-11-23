@@ -1,0 +1,261 @@
+// FarmDirect SQLite Prisma Schema for Local Embedded Persistence
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-sqlite"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  phone           String?           @unique
+  passwordHash    String
+  role            String            @default("CUSTOMER") // CUSTOMER, FARMER, ADMIN
+  isActive        Boolean           @default(true)
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  farmerProfile   FarmerProfile?
+  customerProfile CustomerProfile?
+  addresses       Address[]
+  orders          Order[]
+  payments        Payment[]
+  reviews         Review[]
+  notifications   Notification[]
+}
+
+model FarmerProfile {
+  id                  String             @id @default(uuid())
+  userId              String             @unique
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  farmName            String
+  bio                 String?
+  experienceYears     Int?               @default(0)
+  farmPhoto           String?
+  farmAddress         String
+  district            String
+  state               String
+  pinCode             String
+  latitude            Float?
+  longitude           Float?
+  farmingCategory     String?
+  verificationStatus  String             @default("PENDING") // PENDING, VERIFIED, REJECTED
+  isOrganicCertified  Boolean            @default(false)
+  certificationNumber String?
+  rating              Float              @default(5.0)
+  totalReviews        Int                @default(0)
+  bankAccountName     String?
+  bankAccountNumber    String?
+  bankIfscCode        String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  products            Product[]
+  fulfillments        FarmerFulfillment[]
+  reviews             Review[]
+  transactions        Transaction[]
+  orderItems          OrderItem[]
+}
+
+model CustomerProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  avatar    String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName    String
+  phone       String
+  houseNumber String
+  street      String
+  landmark    String?
+  city        String
+  district    String
+  state       String
+  pinCode     String
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders      Order[]
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  icon        String?
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+model Product {
+  id                 String         @id @default(uuid())
+  farmerId           String
+  farmer             FarmerProfile  @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  categoryId         String
+  category           Category       @relation(fields: [categoryId], references: [id])
+  name               String
+  slug               String
+  description        String
+  price              Float
+  unit               String         @default("kg")
+  stockQuantity      Float
+  minOrderQuantity   Float          @default(1)
+  isOrganic          Boolean        @default(false)
+  organicCertDetails String?
+  harvestDate        DateTime?
+  isAvailable        Boolean        @default(true)
+  isPublished        Boolean        @default(true)
+  averageRating      Float          @default(5.0)
+  reviewCount        Int            @default(0)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  images             ProductImage[]
+  orderItems         OrderItem[]
+  reviews            Review[]
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  isPrimary Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id                 String              @id @default(uuid())
+  orderNumber        String              @unique
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  addressId          String
+  address            Address             @relation(fields: [addressId], references: [id])
+  totalAmount        Float
+  deliveryCharge     Float               @default(0)
+  grandTotal         Float
+  paymentStatus      String              @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  status             String              @default("PLACED")  // PLACED, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentMethod      String              @default("RAZORPAY")
+  razorpayOrderId    String?
+  razorpayPaymentId  String?
+  notes              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  items              OrderItem[]
+  fulfillments       FarmerFulfillment[]
+  payments           Payment[]
+  reviews            Review[]
+}
+
+model OrderItem {
+  id          String        @id @default(uuid())
+  orderId     String
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product       @relation(fields: [productId], references: [id])
+  farmerId    String
+  farmer      FarmerProfile @relation(fields: [farmerId], references: [id])
+  quantity    Float
+  unitPrice   Float
+  totalPrice  Float
+  createdAt   DateTime      @default(now())
+}
+
+model FarmerFulfillment {
+  id             String        @id @default(uuid())
+  orderId        String
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  farmerId       String
+  farmer         FarmerProfile @relation(fields: [farmerId], references: [id])
+  subtotal       Float
+  status         String        @default("PLACED")
+  trackingNumber String?
+  courierName    String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Payment {
+  id               String        @id @default(uuid())
+  orderId          String
+  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  amount           Float
+  currency         String        @default("INR")
+  status           String        @default("PENDING")
+  paymentMethod    String        @default("RAZORPAY")
+  transactionId    String?
+  gatewayOrderId   String?
+  gatewaySignature String?
+  metadata         String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Review {
+  id                 String        @id @default(uuid())
+  productId          String?
+  product            Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  farmerId           String
+  farmer             FarmerProfile @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId            String?
+  order              Order?        @relation(fields: [orderId], references: [id])
+  rating             Int           @default(5)
+  comment            String
+  isVerifiedPurchase Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO")
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id          String            @id @default(uuid())
+  farmerId    String
+  farmer      FarmerProfile     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  orderId     String?
+  amount      Float
+  type        String            @default("CREDIT")
+  status      String            @default("COMPLETED")
+  description String
+  createdAt   DateTime          @default(now())
+}

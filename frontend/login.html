@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | FarmDirect</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body style="background:#f8faf5;display:flex;flex-direction:column;min-height:100vh;">
+
+  <header class="site-header">
+    <div class="container header-inner" style="justify-content:center;">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-leaf"></i>
+        <span>FarmDirect</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container section" style="flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 1rem;">
+    <div class="card" style="width:100%;max-width:440px;padding:2.5rem;">
+      
+      <div style="text-align:center;margin-bottom:2rem;">
+        <h1 style="font-size:1.75rem;font-weight:800;color:var(--text-dark);margin-bottom:0.5rem;">Welcome Back</h1>
+        <p style="color:var(--text-muted);font-size:0.9rem;">Sign in to your customer or farmer account</p>
+      </div>
+
+      <!-- Demo Accounts Quick Fill Pills -->
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-md);padding:0.85rem;margin-bottom:1.5rem;font-size:0.8rem;">
+        <div style="font-weight:700;color:var(--primary-color);margin-bottom:0.4rem;">⚡ Quick Fill Demo Accounts:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+          <button type="button" class="btn btn-sm btn-light" style="font-size:0.75rem;" onclick="fillDemo('customer@farmdirect.in', 'FarmDirect@123')">
+            🛒 Customer Demo
+          </button>
+          <button type="button" class="btn btn-sm btn-light" style="font-size:0.75rem;" onclick="fillDemo('gurpreet@goldenfields.in', 'FarmDirect@123')">
+            🌾 Farmer Demo
+          </button>
+          <button type="button" class="btn btn-sm btn-light" style="font-size:0.75rem;" onclick="fillDemo('admin@farmdirect.in', 'FarmDirect@123')">
+            🛡️ Admin Demo
+          </button>
+        </div>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label">Email Address or Mobile Phone</label>
+          <input type="text" id="login-identifier" class="form-control" required placeholder="name@domain.com or 10-digit mobile">
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+            <label class="form-label" style="margin-bottom:0;">Password</label>
+            <a href="javascript:void(0)" onclick="toast.info('Default demo password is FarmDirect@123')" style="font-size:0.8rem;color:var(--secondary-color);">Forgot?</a>
+          </div>
+          <input type="password" id="login-password" class="form-control" required placeholder="Enter your password">
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:1.5rem;">
+          Sign In to FarmDirect
+        </button>
+      </form>
+
+      <div style="text-align:center;margin-top:2rem;font-size:0.9rem;color:var(--text-muted);">
+        Don't have an account? <br>
+        <a href="register.html?role=customer" style="font-weight:700;color:var(--primary-color);">Register as Customer</a> or 
+        <a href="register.html?role=farmer" style="font-weight:700;color:var(--primary-color);">Join as Farmer</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    function fillDemo(email, pass) {
+      document.getElementById('login-identifier').value = email;
+      document.getElementById('login-password').value = pass;
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('login-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+      try {
+        const identifier = document.getElementById('login-identifier').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        const res = await auth.login(identifier, password);
+        toast.success(res.message || 'Logged in successfully!');
+
+        const user = res.user;
+        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+
+        setTimeout(() => {
+          if (redirectParam) {
+            window.location.href = decodeURIComponent(redirectParam);
+          } else if (user.role === 'FARMER') {
+            window.location.href = 'farmer/dashboard.html';
+          } else {
+            window.location.href = 'index.html';
+          }
+        }, 500);
+      } catch (err) {
+        toast.error(err.message || 'Sign in failed');
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In to FarmDirect';
+      }
+    });
+  </script>
+</body>
+</html>

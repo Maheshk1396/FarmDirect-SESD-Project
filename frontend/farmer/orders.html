@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incoming Customer Orders | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="add-product.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-plus-circle"></i> Add New Product
+        </a>
+        <a href="orders.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+        <a href="earnings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="profile.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">Incoming Customer Harvest Orders</h2>
+      </header>
+
+      <div class="dashboard-body">
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer & Destination</th>
+                  <th>Items to Harvest</th>
+                  <th>Subtotal</th>
+                  <th>Update Fulfillment</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody id="farmer-orders-full-table">
+                <tr><td colspan="6" style="text-align:center;padding:2rem;">Loading incoming orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!auth.requireAuth('FARMER')) return;
+      loadOrders();
+    });
+
+    async function loadOrders() {
+      try {
+        const res = await api.get('/farmer/orders');
+        const orders = res.data;
+        const tbody = document.getElementById('farmer-orders-full-table');
+
+        if (!orders || orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:3rem;">No customer orders currently pending.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders.map(ord => `
+          <tr>
+            <td>
+              <strong>#${ord.orderNumber}</strong><br>
+              <span style="font-size:0.75rem;color:var(--text-muted);">${new Date(ord.createdAt).toLocaleDateString()}</span>
+            </td>
+            <td>
+              <strong>${ord.customerName}</strong><br>
+              <span style="font-size:0.8rem;color:var(--text-muted);">${ord.deliveryAddress ? `${ord.deliveryAddress.street}, ${ord.deliveryAddress.city} - ${ord.deliveryAddress.pinCode}` : ord.customerCity}</span>
+            </td>
+            <td>
+              <div style="font-size:0.85rem;">
+                ${ord.items.map(it => `<div>• ${it.productName} (<strong>${it.quantity} ${it.unit}</strong>)</div>`).join('')}
+              </div>
+            </td>
+            <td><strong style="color:var(--primary-color);">₹${ord.farmerSubtotal.toFixed(2)}</strong></td>
+            <td>
+              <select onchange="changeStatus('${ord.id}', this.value)" style="padding:0.4rem 0.6rem;border-radius:var(--radius-sm);border:1px solid var(--border-color);font-weight:600;font-size:0.85rem;">
+                <option value="PLACED" ${ord.fulfillmentStatus === 'PLACED' ? 'selected' : ''}>Placed</option>
+                <option value="CONFIRMED" ${ord.fulfillmentStatus === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
+                <option value="PROCESSING" ${ord.fulfillmentStatus === 'PROCESSING' ? 'selected' : ''}>Harvesting / Packing</option>
+                <option value="READY_FOR_PICKUP" ${ord.fulfillmentStatus === 'READY_FOR_PICKUP' ? 'selected' : ''}>Ready for Pickup</option>
+                <option value="SHIPPED" ${ord.fulfillmentStatus === 'SHIPPED' ? 'selected' : ''}>Dispatched / Shipped</option>
+                <option value="DELIVERED" ${ord.fulfillmentStatus === 'DELIVERED' ? 'selected' : ''}>Delivered</option>
+              </select>
+            </td>
+            <td>
+              <span class="badge ${ord.paymentStatus === 'PAID' ? 'badge-success' : 'badge-warning'}">
+                ${ord.paymentStatus}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        toast.error('Failed to load orders');
+      }
+    }
+
+    async function changeStatus(orderId, status) {
+      try {
+        await api.patch(`/orders/${orderId}/status`, { status });
+        toast.success(`Order fulfillment updated to ${status}`);
+      } catch (e) {
+        toast.error(e.message || 'Status update failed');
+      }
+    }
+  </script>
+</body>
+</html>

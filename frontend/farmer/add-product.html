@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Agricultural Product | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="add-product.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-plus-circle"></i> Add New Product
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+        <a href="earnings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="profile.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">List New Agricultural Produce</h2>
+      </header>
+
+      <div class="dashboard-body" style="max-width:800px;">
+        <div class="card" style="padding:2.5rem;">
+          
+          <form id="add-product-form">
+            <div class="form-group">
+              <label class="form-label">Produce / Crop Name *</label>
+              <input type="text" id="add-name" class="form-control" required placeholder="e.g. Traditional Aged Basmati Rice (1121 Pusa)">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select id="add-category" class="form-control form-select" required>
+                  <option value="cat-veg">Vegetables</option>
+                  <option value="cat-fruit">Fruits</option>
+                  <option value="cat-grain">Grains (Rice, Wheat, Millets)</option>
+                  <option value="cat-pulse">Pulses (Dals & Lentils)</option>
+                  <option value="cat-dairy">Dairy (Ghee, Milk, Paneer)</option>
+                  <option value="cat-organic">Organic Products</option>
+                  <option value="cat-seeds">Seeds</option>
+                  <option value="cat-spices">Spices & Herbs</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Pricing Unit *</label>
+                <select id="add-unit" class="form-control form-select" required>
+                  <option value="kg">Per Kilogram (kg)</option>
+                  <option value="packet">Per Packet / Jar</option>
+                  <option value="liter">Per Liter (L)</option>
+                  <option value="dozen">Per Dozen</option>
+                  <option value="quintal">Per Quintal (100kg)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">Price in INR (₹) *</label>
+                <input type="number" id="add-price" class="form-control" required step="0.5" placeholder="e.g. 165">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Available Stock *</label>
+                <input type="number" id="add-stock" class="form-control" required step="0.5" placeholder="e.g. 250">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Min Order Qty *</label>
+                <input type="number" id="add-min-order" class="form-control" required value="1" min="1">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description & Cultivation Story</label>
+              <textarea id="add-description" class="form-control" placeholder="Describe variety, soil, aroma, harvest methods, and storage advice..."></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">Harvest Date</label>
+                <input type="date" id="add-harvest-date" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Crop Image (Upload)</label>
+                <input type="file" id="add-image-file" class="form-control" accept="image/*">
+              </div>
+            </div>
+
+            <div class="form-group" style="background:#f0fdf4;padding:1rem;border-radius:var(--radius-md);border:1px solid #bbf7d0;">
+              <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-weight:700;color:var(--primary-color);">
+                <input type="checkbox" id="add-is-organic">
+                <span>🌿 100% Certified Organic Harvest</span>
+              </label>
+              <div class="form-helper" style="margin-top:0.4rem;">
+                Check this if your crop adheres to Jaivik Bharat, NPOP, or PGS natural farming standards.
+              </div>
+            </div>
+
+            <button type="submit" id="add-prod-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:1.5rem;">
+              Publish Harvest to Marketplace
+            </button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!auth.requireAuth('FARMER')) return;
+
+      document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('add-prod-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing produce...';
+
+        try {
+          const formData = new FormData();
+          formData.append('name', document.getElementById('add-name').value.trim());
+          formData.append('categoryId', document.getElementById('add-category').value);
+          formData.append('unit', document.getElementById('add-unit').value);
+          formData.append('price', document.getElementById('add-price').value);
+          formData.append('stockQuantity', document.getElementById('add-stock').value);
+          formData.append('minOrderQuantity', document.getElementById('add-min-order').value);
+          formData.append('description', document.getElementById('add-description').value.trim());
+          formData.append('harvestDate', document.getElementById('add-harvest-date').value);
+          formData.append('isOrganic', document.getElementById('add-is-organic').checked);
+
+          const imgFile = document.getElementById('add-image-file').files[0];
+          if (imgFile) {
+            formData.append('images', imgFile);
+          }
+
+          const res = await api.post('/products', formData);
+          toast.success('Crop published successfully to the marketplace!');
+
+          setTimeout(() => {
+            window.location.href = 'products.html';
+          }, 800);
+        } catch (err) {
+          toast.error(err.message || 'Failed to list product');
+          btn.disabled = false;
+          btn.innerHTML = 'Publish Harvest to Marketplace';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

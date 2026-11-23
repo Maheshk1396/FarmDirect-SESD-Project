@@ -1,0 +1,213 @@
+/* ==========================================================================
+   FarmDirect - Responsive Styles
+   Breakpoints: Desktop (1440px), Laptop (1024px), Tablet (768px), Mobile (480px/375px)
+   ========================================================================== */
+
+/* Laptop & Tablet Large (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .header-search {
+    max-width: 320px;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .dashboard-layout {
+    grid-template-columns: 240px 1fr !important;
+  }
+}
+
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 66px;
+  }
+
+  .section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .top-bar {
+    display: none;
+  }
+
+  .site-header .container {
+    padding: 0 1rem;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: var(--header-height);
+    left: -100%;
+    width: 280px;
+    height: calc(100vh - var(--header-height));
+    background: #ffffff;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+    z-index: 1001;
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .header-search {
+    display: none; /* Accessible via mobile search button */
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  /* Marketplace filters */
+  .marketplace-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 320px;
+    max-width: 85%;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 1100;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    transition: 0.3s ease;
+  }
+
+  .filter-sidebar.active {
+    left: 0;
+  }
+
+  .filter-mobile-bar {
+    display: flex !important;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Cart & Checkout */
+  .cart-layout, .checkout-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Dashboard */
+  .dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    z-index: 1100;
+    transition: 0.3s ease;
+  }
+
+  .dashboard-sidebar.active {
+    left: 0;
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .charts-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile Small (max-width: 480px) */
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  .product-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Global Hamburger Toggle Button */
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dark);
+  font-size: 1.4rem;
+  padding: 0.4rem;
+}
+
+.backdrop-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+.backdrop-overlay.active {
+  display: block;
+}

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmDirect – From Farmers to Your Doorstep | Fresh Agricultural Marketplace</title>
+  <meta name="description" content="Discover fresh agricultural produce directly from verified Indian farmers. Transparent prices, organic certified harvest, and fast direct-to-home delivery.">
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div>🌱 <strong>FarmDirect Guarantee:</strong> 100% Direct from Indian Farmers with Zero Middlemen Markups</div>
+      <div style="display:flex;gap:1.25rem;">
+        <span><i class="fa-solid fa-phone"></i> +91 1800-FARM-DIRECT</span>
+        <span><i class="fa-solid fa-truck-fast"></i> Delivery Across India</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="index.html" class="brand-logo">
+          <i class="fa-solid fa-leaf"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="header-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" placeholder="Search fresh organic produce, grains, mangoes, basmati..." id="global-search-input">
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="products.html" class="nav-link">Marketplace</a>
+        <a href="farmers-map.html" class="nav-link">
+          <i class="fa-solid fa-location-dot" style="color:var(--secondary-color);"></i> Nearby Farmers
+        </a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="register.html?role=farmer" class="nav-link" style="color:var(--primary-color);font-weight:700;">Join as Farmer</a>
+      </nav>
+
+      <!-- User & Cart Actions -->
+      <div class="nav-actions">
+        <a href="wishlist.html" class="action-icon-btn" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge-count wishlist-count-badge" style="display:none;">0</span>
+        </a>
+        <a href="cart.html" class="action-icon-btn" title="Shopping Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge-count cart-count-badge" style="display:none;">0</span>
+        </a>
+        <div id="nav-auth-container">
+          <!-- Auth buttons dynamically populated by app.js -->
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="backdrop-overlay"></div>
+
+  <main>
+    <!-- 1. Hero Section -->
+    <section class="section" style="background:linear-gradient(135deg, #f0fdf4 0%, #f8faf5 100%);padding:5.5rem 0 4.5rem 0;position:relative;overflow:hidden;">
+      <div class="container" style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:3.5rem;align-items:center;">
+        <div>
+          <span class="section-tag">Direct From 500+ Verified Farms</span>
+          <h1 style="font-size:3.25rem;font-weight:800;line-height:1.15;color:var(--text-dark);margin-bottom:1.25rem;">
+            Fresh From Farms. <br><span style="color:var(--primary-color);">Directly To You.</span>
+          </h1>
+          <p style="font-size:1.15rem;color:var(--text-muted);line-height:1.65;margin-bottom:2rem;max-width:540px;">
+            Discover authentic agricultural harvest directly from trusted local Indian farmers. Better prices for you, fairer earnings for growers, and fresher food on every table.
+          </p>
+          <div class="hero-buttons" style="display:flex;gap:1rem;align-items:center;margin-bottom:2.5rem;">
+            <a href="products.html" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-basket-shopping"></i> Explore Products
+            </a>
+            <a href="register.html?role=farmer" class="btn btn-outline btn-lg" style="background:#fff;">
+              <i class="fa-solid fa-tractor"></i> Join as a Farmer
+            </a>
+          </div>
+          <div style="display:flex;gap:2rem;border-top:1px solid var(--border-color);padding-top:1.5rem;">
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--primary-color);">100%</div>
+              <div style="font-size:0.85rem;color:var(--text-muted);">Farm Direct</div>
+            </div>
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--primary-color);">₹0</div>
+              <div style="font-size:0.85rem;color:var(--text-muted);">Middleman Markup</div>
+            </div>
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--primary-color);">4.9 ★</div>
+              <div style="font-size:0.85rem;color:var(--text-muted);">Customer Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:relative;">
+          <div style="border-radius:24px;overflow:hidden;box-shadow:var(--shadow-lg);border:4px solid #fff;">
+            <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80" alt="Fresh Farm Harvest" style="width:100%;height:440px;object-fit:cover;">
+          </div>
+          <div style="position:absolute;bottom:-20px;left:-20px;background:#fff;padding:1rem 1.25rem;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:0.75rem;border:1px solid var(--border-color);">
+            <div style="width:44px;height:44px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;color:var(--primary-color);font-size:1.2rem;">
+              <i class="fa-solid fa-shield-check"></i>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Verified Indian Growers</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">NPOP & PGS Certified Organic</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Product Categories -->
+    <section class="section" style="background:#fff;">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">Browse Harvest</span>
+          <h2 class="section-title">Explore by Agricultural Category</h2>
+          <p class="section-subtitle">Fresh vegetables, heritage grains, unpolished pulses, and pure A2 Vedic dairy picked at sunrise.</p>
+        </div>
+        <div class="category-grid" id="home-categories-grid" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.5rem;">
+          <!-- Dynamically populated or rendered -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Fresh Products Near You -->
+    <section class="section">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;">
+          <div>
+            <span class="section-tag">Local Harvest</span>
+            <h2 class="section-title" style="margin-bottom:0.25rem;">Fresh Products Near You</h2>
+            <p class="section-subtitle">Locally harvested crops available for fast doorstep delivery.</p>
+          </div>
+          <a href="products.html" class="btn btn-outline">View All Products <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="product-grid" id="home-nearby-products" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.5rem;">
+          <!-- Products injected -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Featured Farmers -->
+    <section class="section" style="background:#fff;">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">Meet the Producers</span>
+          <h2 class="section-title">Our Verified Partner Farmers</h2>
+          <p class="section-subtitle">Know exactly who grew your food and learn about their generational farming methods.</p>
+        </div>
+        <div id="home-featured-farmers" style="display:grid;grid-template-columns:repeat(3, 1fr);gap:1.5rem;">
+          <!-- Farmers injected -->
+        </div>
+        <div style="text-align:center;margin-top:2.5rem;">
+          <a href="farmers-map.html" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-map-location-dot"></i> Explore Farmers on Interactive Map
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Best-Selling Products -->
+    <section class="section">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;">
+          <div>
+            <span class="section-tag">Customer Favorites</span>
+            <h2 class="section-title" style="margin-bottom:0.25rem;">Best-Selling Farm Produce</h2>
+            <p class="section-subtitle">Highly rated seasonal produce loved by thousands of households.</p>
+          </div>
+          <a href="products.html?sortBy=rating" class="btn btn-outline">Top Rated <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="product-grid" id="home-bestseller-products" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.5rem;">
+          <!-- Injected via script -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 100% Certified Organic Section -->
+    <section class="section" style="background:#166534;color:#fff;">
+      <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;">
+        <div>
+          <span class="section-tag" style="background:#22c55e;color:#111a14;">Certified Clean Food</span>
+          <h2 style="font-size:2.5rem;font-weight:800;line-height:1.2;margin:1rem 0;color:#fff;">
+            Pure 100% Organic Products Cultivated Without Chemicals
+          </h2>
+          <p style="font-size:1.05rem;color:#bbf7d0;line-height:1.6;margin-bottom:1.75rem;">
+            Every organic product on FarmDirect carries official NPOP, PGS-India, or Jaivik Bharat certification. Our farmers use traditional cow-based natural farming, Jeevamrutha, and zero synthetic pesticides.
+          </p>
+          <div style="display:flex;gap:1.5rem;margin-bottom:2rem;">
+            <div>
+              <i class="fa-solid fa-check-circle" style="color:var(--accent-yellow);"></i> <strong>Zero Pesticides</strong>
+            </div>
+            <div>
+              <i class="fa-solid fa-check-circle" style="color:var(--accent-yellow);"></i> <strong>Soil Regenerative</strong>
+            </div>
+            <div>
+              <i class="fa-solid fa-check-circle" style="color:var(--accent-yellow);"></i> <strong>Lab Tested</strong>
+            </div>
+          </div>
+          <a href="products.html?organic=true" class="btn btn-accent btn-lg">
+            Shop Organic Produce <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+        <div>
+          <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&auto=format&fit=crop&q=80" alt="Organic Farming in India" style="border-radius:20px;border:3px solid rgba(255,255,255,0.2);box-shadow:var(--shadow-lg);">
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. How FarmDirect Works -->
+    <section class="section" id="how-it-works" style="background:#fff;">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">Simple & Transparent</span>
+          <h2 class="section-title">How FarmDirect Works</h2>
+          <p class="section-subtitle">Bridging the gap between rural growers and urban consumers in four simple steps.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:2rem;text-align:center;">
+          <div class="card" style="padding:2rem 1.5rem;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--primary-color);display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 1.25rem auto;">
+              1
+            </div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Farmers List Harvest</h3>
+            <p style="font-size:0.875rem;color:var(--text-muted);">Verified farmers list seasonal crops, set transparent prices, and declare harvest dates.</p>
+          </div>
+
+          <div class="card" style="padding:2rem 1.5rem;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--primary-color);display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 1.25rem auto;">
+              2
+            </div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">You Order Direct</h3>
+            <p style="font-size:0.875rem;color:var(--text-muted);">Discover nearby farms on the map, compare produce, and checkout with Razorpay or COD.</p>
+          </div>
+
+          <div class="card" style="padding:2rem 1.5rem;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--primary-color);display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 1.25rem auto;">
+              3
+            </div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Fresh Farm Packing</h3>
+            <p style="font-size:0.875rem;color:var(--text-muted);">Farmers harvest upon order placement and pack in eco-friendly protective crates.</p>
+          </div>
+
+          <div class="card" style="padding:2rem 1.5rem;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--primary-color);display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 1.25rem auto;">
+              4
+            </div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Doorstep Delivery</h3>
+            <p style="font-size:0.875rem;color:var(--text-muted);">Express refrigerated logistics deliver direct to your kitchen with live shipment tracking.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Why Choose FarmDirect -->
+    <section class="section">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">The Difference</span>
+          <h2 class="section-title">Why Choose FarmDirect?</h2>
+          <p class="section-subtitle">We empower farmers with dignity while giving families the purest nutrition.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:1.5rem;">
+          <div class="card" style="padding:2rem;">
+            <div style="font-size:2.2rem;color:var(--secondary-color);margin-bottom:1rem;">🌾</div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Fair Income For Farmers</h3>
+            <p style="font-size:0.9rem;color:var(--text-muted);">Farmers retain up to 88% of retail prices compared to only 20-30% in traditional Mandi chains.</p>
+          </div>
+          <div class="card" style="padding:2rem;">
+            <div style="font-size:2.2rem;color:var(--secondary-color);margin-bottom:1rem;">⚡</div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Peak Freshness</h3>
+            <p style="font-size:0.9rem;color:var(--text-muted);">Produce is harvested after you order, reaching your kitchen within 24 to 48 hours of plucking.</p>
+          </div>
+          <div class="card" style="padding:2rem;">
+            <div style="font-size:2.2rem;color:var(--secondary-color);margin-bottom:1rem;">📍</div>
+            <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.5rem;">Complete Farm Traceability</h3>
+            <p style="font-size:0.9rem;color:var(--text-muted);">Scan QR codes or view farmer profiles to see soil data, harvest date, and organic credentials.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Customer Testimonials -->
+    <section class="section" style="background:#fff;">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">Community Feedback</span>
+          <h2 class="section-title">Loved by Conscious Consumers</h2>
+          <p class="section-subtitle">Read how FarmDirect has transformed kitchens across India.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:1.5rem;">
+          <div class="card" style="padding:1.75rem;">
+            <div style="color:#f59e0b;margin-bottom:0.75rem;">★★★★★</div>
+            <p style="font-size:0.925rem;color:var(--text-dark);line-height:1.6;margin-bottom:1.25rem;">
+              "The Basmati rice from Gurpreet Singh's farm in Ludhiana is simply magical. The aroma filled our entire home. Knowing my payment goes directly to him makes every meal taste better."
+            </p>
+            <div style="font-weight:700;font-size:0.9rem;">Meera S. Iyer</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Bengaluru • Verified Buyer</div>
+          </div>
+
+          <div class="card" style="padding:1.75rem;">
+            <div style="color:#f59e0b;margin-bottom:0.75rem;">★★★★★</div>
+            <p style="font-size:0.925rem;color:var(--text-dark);line-height:1.6;margin-bottom:1.25rem;">
+              "I ordered A2 Gir cow bilona ghee from Mathura. The texture, aroma, and purity are unmatched. No supermarket brand comes close to this authentic Vedic ghee."
+            </p>
+            <div style="font-weight:700;font-size:0.9rem;">Rohit Mukherjee</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Mumbai • Verified Buyer</div>
+          </div>
+
+          <div class="card" style="padding:1.75rem;">
+            <div style="color:#f59e0b;margin-bottom:0.75rem;">★★★★★</div>
+            <p style="font-size:0.925rem;color:var(--text-dark);line-height:1.6;margin-bottom:1.25rem;">
+              "The interactive map allowed me to discover organic apple orchards in Kinnaur. The apples arrived crisp, un-waxed, and full of pure mountain flavor!"
+            </p>
+            <div style="font-weight:700;font-size:0.9rem;">Kavita Nambiar</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Delhi NCR • Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Farmer Success Stories -->
+    <section class="section">
+      <div class="container">
+        <div class="section-title-wrap">
+          <span class="section-tag">Real Impact</span>
+          <h2 class="section-title">Farmer Success Stories</h2>
+          <p class="section-subtitle">Transforming agrarian livelihoods through direct digital commerce.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+          <div class="card" style="display:flex;gap:1.5rem;padding:1.5rem;align-items:center;">
+            <img src="https://images.unsplash.com/photo-1592417817098-8f3d69104a49?w=400&auto=format&fit=crop&q=80" alt="Ramesh Patil" style="width:120px;height:120px;border-radius:var(--radius-lg);object-fit:cover;">
+            <div>
+              <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.25rem;">Ramesh Patil (Nashik)</h3>
+              <div style="font-size:0.8rem;color:var(--secondary-color);font-weight:700;margin-bottom:0.5rem;">+140% Increase in Farm Net Income</div>
+              <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.5;">
+                "Earlier, mandi agents paid me whatever they wished. On FarmDirect, I set my price for Nashik onions and tomatoes. Today, over 400 families buy directly from my farm every week."
+              </p>
+            </div>
+          </div>
+
+          <div class="card" style="display:flex;gap:1.5rem;padding:1.5rem;align-items:center;">
+            <img src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=400&auto=format&fit=crop&q=80" alt="Suresh Gowda" style="width:120px;height:120px;border-radius:var(--radius-lg);object-fit:cover;">
+            <div>
+              <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.25rem;">Suresh Gowda (Mandya)</h3>
+              <div style="font-size:0.8rem;color:var(--secondary-color);font-weight:700;margin-bottom:0.5rem;">Revived Indigenous Millets</div>
+              <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.5;">
+                "Our native Kaveri Ragi and solid jaggery now reach customers across India. The instant Razorpay payouts help me invest in solar-powered irrigation."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Join as Farmer CTA -->
+    <section class="section" style="background:linear-gradient(135deg, #166534 0%, #14532d 100%);color:#fff;text-align:center;">
+      <div class="container" style="max-width:760px;">
+        <span class="section-tag" style="background:#22c55e;color:#111a14;">Are You a Grower?</span>
+        <h2 style="font-size:2.5rem;font-weight:800;color:#fff;margin:1rem 0;">
+          Start Selling Your Harvest Directly to Consumers Today
+        </h2>
+        <p style="font-size:1.1rem;color:#dcfce7;line-height:1.6;margin-bottom:2rem;">
+          Join India's fastest growing digital farmer network. Keep 100% control over your prices, track sales with real-time analytics, and get paid directly to your bank account.
+        </p>
+        <div style="display:flex;gap:1rem;justify-content:center;">
+          <a href="register.html?role=farmer" class="btn btn-accent btn-lg">
+            <i class="fa-solid fa-tractor"></i> Register Your Farm Profile
+          </a>
+          <a href="login.html" class="btn btn-outline btn-lg" style="color:#fff;border-color:#fff;">
+            Farmer Portal Login
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Newsletter -->
+    <section class="section" style="background:#fff;border-bottom:1px solid var(--border-color);">
+      <div class="container" style="max-width:640px;text-align:center;">
+        <span class="section-tag">Seasonal Alerts</span>
+        <h2 style="font-size:1.75rem;font-weight:800;margin-bottom:0.5rem;">Never Miss Fresh Seasonal Harvests</h2>
+        <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:1.5rem;">
+          Get weekly updates on Alphonso mango seasons, winter Himalayan apples, cold-pressed oils, and harvest festival discounts.
+        </p>
+        <form style="display:flex;gap:0.5rem;" onsubmit="event.preventDefault();toast.success('Thank you for subscribing to FarmDirect updates!');this.reset();">
+          <input type="email" placeholder="Enter your email address" class="form-control" required style="border-radius:var(--radius-full);">
+          <button type="submit" class="btn btn-primary" style="border-radius:var(--radius-full);padding:0.75rem 1.75rem;">
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- 13. Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="brand-logo" style="color:#fff;">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+        <p>
+          FarmDirect is India's leading transparent agricultural marketplace. Connecting sustainable farmers directly with conscious consumers for a healthier nation.
+        </p>
+        <div style="display:flex;gap:1rem;font-size:1.2rem;">
+          <a href="#" style="color:#cbd5e1;"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="#" style="color:#cbd5e1;"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" style="color:#cbd5e1;"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" style="color:#cbd5e1;"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="footer-title">Produce Categories</h4>
+        <ul class="footer-links">
+          <li><a href="products.html?category=vegetables">Farm Fresh Vegetables</a></li>
+          <li><a href="products.html?category=fruits">Seasonal Orchard Fruits</a></li>
+          <li><a href="products.html?category=grains">Heirloom Grains & Basmati</a></li>
+          <li><a href="products.html?category=pulses">Unpolished Dals</a></li>
+          <li><a href="products.html?category=dairy">Pure A2 Vedic Ghee & Dairy</a></li>
+          <li><a href="products.html?category=organic-products">100% Certified Organic</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-title">For Farmers & Buyers</h4>
+        <ul class="footer-links">
+          <li><a href="register.html?role=farmer">Join as a Farmer</a></li>
+          <li><a href="farmer/dashboard.html">Farmer Portal</a></li>
+          <li><a href="farmers-map.html">Locate Nearby Farms</a></li>
+          <li><a href="customer-orders.html">Track Deliveries</a></li>
+          <li><a href="cart.html">Shopping Cart</a></li>
+          <li><a href="login.html">Sign In / Account</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-title">Registered Office</h4>
+        <p style="font-size:0.875rem;color:#94a3b8;line-height:1.6;margin-bottom:1rem;">
+          FarmDirect Agritech India Pvt. Ltd.<br>
+          Sector 18, Agri Innovation Hub,<br>
+          Bengaluru, Karnataka - 560103
+        </p>
+        <div style="font-size:0.85rem;color:#94a3b8;">
+          Email: <a href="mailto:support@farmdirect.in" style="color:var(--secondary-color);">support@farmdirect.in</a><br>
+          Phone: +91 1800-3276-347
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>© 2026 FarmDirect India. All rights reserved. Built with ❤️ for Indian Farmers.</div>
+      <div style="display:flex;gap:1.5rem;">
+        <a href="#" style="color:#64748b;">Terms of Service</a>
+        <a href="#" style="color:#64748b;">Privacy Policy</a>
+        <a href="#" style="color:#64748b;">Farmer Code of Conduct</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Homepage Dynamic Loader Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Load Categories
+      try {
+        const catRes = await api.get('/categories');
+        const catGrid = document.getElementById('home-categories-grid');
+        if (catGrid && catRes.data) {
+          catGrid.innerHTML = catRes.data.map(c => `
+            <a href="products.html?category=${c.slug}" class="category-card">
+              <div class="category-icon">
+                <i class="fa-solid ${c.icon}"></i>
+              </div>
+              <div class="category-name">${c.name}</div>
+              <div class="category-count">${c.productCount} Fresh Products</div>
+            </a>
+          `).join('');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      // 2. Load Nearby & Bestselling Products
+      try {
+        const prodRes = await api.get('/products', { limit: 8 });
+        const nearbyGrid = document.getElementById('home-nearby-products');
+        const bestGrid = document.getElementById('home-bestseller-products');
+
+        if (prodRes.data && prodRes.data.length > 0) {
+          const makeCard = (p) => `
+            <div class="card product-card">
+              <div class="product-thumb">
+                <a href="product-details.html?id=${p.id}">
+                  <img src="${p.images?.[0]?.imageUrl || ''}" alt="${p.name}" loading="lazy">
+                </a>
+                <div class="product-badges">
+                  ${p.isOrganic ? '<span class="badge badge-success"><i class="fa-solid fa-leaf"></i> Organic</span>' : ''}
+                  ${p.farmer?.verificationStatus === 'VERIFIED' ? '<span class="badge badge-verified"><i class="fa-solid fa-shield-check"></i> Verified</span>' : ''}
+                </div>
+              </div>
+              <div class="product-body">
+                <div class="product-farmer-meta">
+                  <i class="fa-solid fa-tractor" style="color:var(--secondary-color);"></i>
+                  <a href="farmer-profile.html?id=${p.farmer?.id}">${p.farmer?.farmName || 'Verified Farm'}</a>
+                </div>
+                <a href="product-details.html?id=${p.id}" class="product-title" title="${p.name}">${p.name}</a>
+                <div class="product-rating">
+                  <span class="stars"><i class="fa-solid fa-star"></i></span>
+                  <span>${p.averageRating}</span>
+                  <span style="color:var(--text-light);font-weight:normal;">(${p.reviewCount})</span>
+                </div>
+                <div class="product-price-row">
+                  <div>
+                    <span class="product-price">₹${p.price}</span>
+                    <span class="product-unit">/ ${p.unit}</span>
+                  </div>
+                  <span style="font-size:0.75rem;color:var(--secondary-color);font-weight:700;">In Stock</span>
+                </div>
+                <div class="product-footer-actions">
+                  <button class="btn btn-primary btn-block btn-sm" onclick="cart.add('${p.id}', 1)">
+                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          if (nearbyGrid) nearbyGrid.innerHTML = prodRes.data.slice(0, 4).map(makeCard).join('');
+          if (bestGrid) bestGrid.innerHTML = prodRes.data.slice(4, 8).map(makeCard).join('');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      // 3. Load Featured Farmers
+      try {
+        const farmerRes = await api.get('/farmers', { verified: 'true' });
+        const farmerContainer = document.getElementById('home-featured-farmers');
+        if (farmerContainer && farmerRes.data) {
+          farmerContainer.innerHTML = farmerRes.data.slice(0, 3).map(f => `
+            <div class="card" style="padding:1.5rem;display:flex;flex-direction:column;">
+              <img src="${f.farmPhoto}" alt="${f.farmName}" style="width:100%;height:180px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:1rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                <h3 style="font-size:1.15rem;font-weight:700;">${f.farmName}</h3>
+                <span class="badge badge-verified"><i class="fa-solid fa-shield-check"></i> Verified</span>
+              </div>
+              <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">
+                📍 ${f.district}, ${f.state} • ${f.experienceYears}+ years experience
+              </div>
+              <p style="font-size:0.875rem;color:var(--text-dark);line-height:1.5;margin-bottom:1.25rem;flex:1;">
+                ${f.bio}
+              </p>
+              <div style="display:flex;gap:0.75rem;">
+                <a href="farmer-profile.html?id=${f.id}" class="btn btn-primary btn-sm" style="flex:1;">
+                  Visit Farm
+                </a>
+                <a href="products.html" class="btn btn-outline btn-sm">
+                  ${f.productCount} Products
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  </script>
+</body>
+</html>

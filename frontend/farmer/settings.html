@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="settings.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-gear"></i> Settings
+        </a>
+      </nav>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">Account & Notification Preferences</h2>
+      </header>
+
+      <div class="dashboard-body" style="max-width:640px;">
+        <div class="card" style="padding:2rem;">
+          <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:1.5rem;">Security & Notifications</h3>
+          
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+              <input type="checkbox" checked>
+              <span>Receive WhatsApp & SMS alerts when new customer orders are placed</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+              <input type="checkbox" checked>
+              <span>Enable automatic direct NEFT payout settlements to linked bank</span>
+            </label>
+          </div>
+
+          <div class="dropdown-divider" style="margin:1.5rem 0;"></div>
+
+          <button class="btn btn-primary" onclick="toast.success('Preferences saved successfully!')">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      auth.requireAuth('FARMER');
+    });
+  </script>
+</body>
+</html>

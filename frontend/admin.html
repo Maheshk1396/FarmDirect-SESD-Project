@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Operations Portal | FarmDirect</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body style="background:#f8faf5;">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="background:#111a14;border-color:#1f2e24;">
+    <div class="container header-inner">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <a href="index.html" class="brand-logo" style="color:#fff;">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect Admin</span>
+        </a>
+        <span class="badge badge-verified" style="background:#166534;color:#fff;">Operational Control</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <a href="index.html" target="_blank" class="btn btn-outline btn-sm" style="color:#fff;border-color:#334155;">View Live Store</a>
+        <button class="btn btn-sm btn-danger" onclick="auth.logout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container section" style="padding-top:2.5rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+      <h1 style="font-size:2rem;font-weight:800;color:var(--text-dark);">Marketplace Administration</h1>
+      <span class="badge badge-success" style="font-size:0.85rem;padding:0.4rem 0.8rem;">● Platform Online & Active</span>
+    </div>
+
+    <!-- Platform Stats -->
+    <div class="dashboard-stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-label">Gross Merchandise Value (GMV)</div>
+          <div class="stat-value" id="admin-gmv">₹0</div>
+        </div>
+        <div class="stat-icon green"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-label">Total Platform Orders</div>
+          <div class="stat-value" id="admin-orders">0</div>
+        </div>
+        <div class="stat-icon blue"><i class="fa-solid fa-bag-shopping"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-label">Pending Farmer Verifications</div>
+          <div class="stat-value" id="admin-pending-farmers" style="color:var(--warning-color);">0</div>
+        </div>
+        <div class="stat-icon yellow"><i class="fa-solid fa-user-clock"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-label">Registered Users</div>
+          <div class="stat-value" id="admin-users">0</div>
+        </div>
+        <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
+      </div>
+    </div>
+
+    <!-- Farmer Verification Review Queue -->
+    <div class="table-card" style="margin-bottom:2.5rem;">
+      <div class="table-header" style="background:#fffbeb;border-bottom-color:#fef3c7;">
+        <div class="table-title" style="color:#b45309;display:flex;align-items:center;gap:0.5rem;">
+          <i class="fa-solid fa-shield-halved"></i> Farmer Application Verification Queue
+        </div>
+        <span class="badge badge-warning" id="pending-count-badge">0 Pending</span>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Farm / Producer</th>
+              <th>District & State</th>
+              <th>Category</th>
+              <th>Experience</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-pending-table-body">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;">Checking verification queue...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Registered Platform Users -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Registered Accounts Directory</div>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Role</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Joined Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-table-body">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;">Loading accounts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Require Admin role
+      if (!auth.requireAuth('ADMIN')) return;
+      loadAdminData();
+    });
+
+    async function loadAdminData() {
+      try {
+        // 1. Stats
+        const statsRes = await api.get('/admin/stats');
+        const s = statsRes.data;
+        document.getElementById('admin-gmv').textContent = `₹${s.totalGMV.toLocaleString('en-IN')}`;
+        document.getElementById('admin-orders').textContent = s.totalOrders;
+        document.getElementById('admin-pending-farmers').textContent = s.pendingFarmers;
+        document.getElementById('admin-users').textContent = s.totalUsers;
+        document.getElementById('pending-count-badge').textContent = `${s.pendingFarmers} Pending`;
+
+        // 2. Pending Farmers
+        const pendingRes = await api.get('/admin/farmers/pending');
+        const pendingTbody = document.getElementById('admin-pending-table-body');
+        if (!pendingRes.data || pendingRes.data.length === 0) {
+          pendingTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">No farmer applications awaiting verification. All verified!</td></tr>';
+        } else {
+          pendingTbody.innerHTML = pendingRes.data.map(f => `
+            <tr>
+              <td>
+                <strong>${f.farmName}</strong>
+              </td>
+              <td>${f.district}, ${f.state} (${f.pinCode})</td>
+              <td>${f.farmingCategory || 'Crops'}</td>
+              <td>${f.experienceYears || 0} Years</td>
+              <td><span class="badge badge-warning">${f.verificationStatus}</span></td>
+              <td>
+                <div style="display:flex;gap:0.5rem;">
+                  <button class="btn btn-sm btn-primary" onclick="verifyFarmer('${f.id}', 'VERIFIED')">
+                    <i class="fa-solid fa-check"></i> Verify & Grant Badge
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="verifyFarmer('${f.id}', 'REJECTED')">
+                    Reject
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        // 3. All Users
+        const usersRes = await api.get('/admin/users');
+        const usersTbody = document.getElementById('admin-users-table-body');
+        if (usersRes.data) {
+          usersTbody.innerHTML = usersRes.data.map(u => `
+            <tr>
+              <td><strong>${u.displayName}</strong></td>
+              <td>
+                <span class="badge ${u.role === 'ADMIN' ? 'badge-danger' : u.role === 'FARMER' ? 'badge-success' : 'badge-neutral'}">
+                  ${u.role}
+                </span>
+              </td>
+              <td>${u.email}</td>
+              <td>${u.phone || 'N/A'}</td>
+              <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+              <td><span class="badge badge-success">Active</span></td>
+            </tr>
+          `).join('');
+        }
+
+      } catch (err) {
+        toast.error('Failed to load admin operations data');
+      }
+    }
+
+    async function verifyFarmer(farmerId, status) {
+      try {
+        await api.patch(`/admin/farmers/${farmerId}/verify`, { status });
+        toast.success(`Farmer application ${status === 'VERIFIED' ? 'Approved & Verified' : 'Rejected'}`);
+        loadAdminData();
+      } catch (e) {
+        toast.error(e.message || 'Action failed');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farm Profile Details | Farmer Portal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="../index.html">
+          <i class="fa-solid fa-leaf" style="color:var(--secondary-color);"></i>
+          <span>FarmDirect</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Overview
+        </a>
+        <a href="products.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-boxes-stacked"></i> My Products
+        </a>
+        <a href="orders.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-clipboard-list"></i> Customer Orders
+        </a>
+        <a href="inventory.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-warehouse"></i> Inventory Stock
+        </a>
+        <a href="earnings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Earnings & Payouts
+        </a>
+        <a href="profile.html" class="sidebar-nav-link active">
+          <i class="fa-solid fa-tractor"></i> Farm Profile
+        </a>
+        <a href="settings.html" class="sidebar-nav-link">
+          <i class="fa-solid fa-gear"></i> Settings
+        </a>
+      </nav>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <h2 style="font-size:1.3rem;font-weight:800;">Farm Profile & Public Identity</h2>
+      </header>
+
+      <div class="dashboard-body" style="max-width:860px;">
+        <div class="card" style="padding:2.5rem;">
+          
+          <form id="farmer-profile-form">
+            <div class="form-group">
+              <label class="form-label">Farm Name *</label>
+              <input type="text" id="farm-name-input" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Farm Story & Agricultural Bio</label>
+              <textarea id="farm-bio-input" class="form-control" style="min-height:120px;"></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">District *</label>
+                <input type="text" id="farm-district-input" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">State *</label>
+                <input type="text" id="farm-state-input" class="form-control" required>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">PIN Code *</label>
+                <input type="text" id="farm-pin-input" class="form-control" required maxlength="6">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Latitude (GPS)</label>
+                <input type="number" step="any" id="farm-lat-input" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Longitude (GPS)</label>
+                <input type="number" step="any" id="farm-lng-input" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Farm Photograph (Update)</label>
+              <input type="file" id="farm-photo-input" class="form-control" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-top:1.5rem;">
+              Save Farm Profile
+            </button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!auth.requireAuth('FARMER')) return;
+
+      try {
+        const res = await api.get('/profile');
+        const fp = res.data.farmerProfile;
+
+        if (fp) {
+          document.getElementById('farm-name-input').value = fp.farmName || '';
+          document.getElementById('farm-bio-input').value = fp.bio || '';
+          document.getElementById('farm-district-input').value = fp.district || '';
+          document.getElementById('farm-state-input').value = fp.state || '';
+          document.getElementById('farm-pin-input').value = fp.pinCode || '';
+          document.getElementById('farm-lat-input').value = fp.latitude || '';
+          document.getElementById('farm-lng-input').value = fp.longitude || '';
+        }
+      } catch (e) {
+        toast.error('Failed to load profile');
+      }
+
+      document.getElementById('farmer-profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          const formData = new FormData();
+          formData.append('farmName', document.getElementById('farm-name-input').value.trim());
+          formData.append('bio', document.getElementById('farm-bio-input').value.trim());
+          formData.append('district', document.getElementById('farm-district-input').value.trim());
+          formData.append('state', document.getElementById('farm-state-input').value.trim());
+          formData.append('pinCode', document.getElementById('farm-pin-input').value.trim());
+          formData.append('latitude', document.getElementById('farm-lat-input').value);
+          formData.append('longitude', document.getElementById('farm-lng-input').value);
+
+          const file = document.getElementById('farm-photo-input').files[0];
+          if (file) formData.append('photo', file);
+
+          await api.put('/profile', formData);
+          toast.success('Farm profile saved successfully!');
+        } catch (err) {
+          toast.error(err.message || 'Save failed');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
